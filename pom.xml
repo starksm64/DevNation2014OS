@@ -62,7 +62,7 @@
                                 <configuration>
                                     <target>
                                         <echo message="Copying iot-ear.ear to deployments..."/>
-                                        <copy file="DevNation2014/iotbof-ear/target/iot-ear.ear" todir="deployments"/>
+                                        <copy file="DevNation2014/iotbof-ear/target/iot-ear.ear" todir="deployments" failonerror="false" />
                                     </target>
                                 </configuration>
                             </execution>
