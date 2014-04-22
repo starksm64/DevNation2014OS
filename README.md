@@ -34,11 +34,11 @@ Login to your OpenShift Online account and access the [Applications](https://ope
     * Copy the git clone command line shown and run that on your local computer to pull the application repository down from OpenShift.
 6. Run `git clone https://github.com/starksm64/DevNation2014` to pull the application source onto your computer.
 7. cd into the local git repository
-8. git remote add DevNation2014 ../DevNation2014
-9. git merge -s ours --no-commit DevNation2014/master
-10. git read-tree --prefix=DevNation2014 -u DevNation2014/master
-11. rm -rf DevNation2014/Presentation
-12. 
+8. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014OS.git
+9. git remote add DevNation2014 ../DevNation2014
+10. git merge -s ours --no-commit DevNation2014/master
+11. git read-tree --prefix=DevNation2014 -u DevNation2014/master
+12. rm -rf DevNation2014/Presentation
 
 ## Wildfly Configuration
 There are a few @Resource injections from JNDI that need to be configured in the wildfly server configuration to specify the correct locations for the NSP server, it's domain, and the location of the iotbof-web project NspNotificationService. The configuration file that needs to be edited is iotbof/scripts/pom.xml.
