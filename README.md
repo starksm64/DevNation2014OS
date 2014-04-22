@@ -44,8 +44,8 @@ Login to your OpenShift Online account and access the [Applications](https://ope
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <bindings>
                 <simple name="java:global/NSPDomain" value="domain" type="java.lang.String"/>
-                <simple name="java:global/NSPUsername" value="admin" type="java.lang.String"/>
-                <simple name="java:global/NSPPassword" value="secret" type="java.lang.String"/>
+                <simple name="java:global/NSPUsername" value="hack2" type="java.lang.String"/>
+                <simple name="java:global/NSPPassword" value="hack2" type="java.lang.String"/>
                 <simple name="java:global/NSPURL" value="http://red-hat-summit.cloudapp.net:8080/" type="java.lang.String"/>
                 <simple name="java:global/NotificationCallbackURL" value="http://${env.OPENSHIFT_GEAR_DNS}/iotbof-web/rest/events/send" type="java.net.URL"/>
             </bindings>
