@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>myiot</groupId>
+    <artifactId>myiot</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <name>myiot</name>
+
+    <modules>
+        <module>DevNation2014</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
+            <!-- Use this profile for any OpenShift specific customization your app will need. -->
+            <!-- By default that is to put the resulting archive into the 'deployments' folder. -->
+            <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+            <id>openshift</id>
+            <build>
+                <finalName>myiot</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <echo message="Copying iot-ear.ear to deployments..."/>
+                                        <copy file="DevNation2014/iotbof-ear/target/iot-ear.ear" todir="deployments"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
