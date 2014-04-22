@@ -32,13 +32,14 @@ Login to your OpenShift Online account and access the [Applications](https://ope
 4. The resulting Next steps page will show you the locations of the application git repository to clone![](images/NextStepsOS.png).
     * Copy the git clone command line shown and run that on your local computer to pull the application repository down from OpenShift.
 5. cd into the local git repository
-6. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014OS.git
-7. git remote add DevNation2014 https://github.com/starksm64/DevNation2014.git
-8. git fetch DevNation2014
-9. git merge -s ours --no-commit DevNation2014/master
-10. git read-tree --prefix=DevNation2014 -u DevNation2014/master
-11. rm -rf DevNation2014/Presentation
-12. Edit the .openshift/config/standalone.xml configuration and update the subsystem xmlns="urn:jboss:domain:naming:2.0" section to be as shown here:
+6. `git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014OS.git`
+7. `git remote add DevNation2014 https://github.com/starksm64/DevNation2014.git`
+8. `git fetch DevNation2014`
+9. `git merge -s ours --no-commit DevNation2014/master`
+10. `git read-tree --prefix=DevNation2014 -u DevNation2014/master`
+11. `rm -rf DevNation2014/Presentation`
+12. Edit the `.openshift/config/standalone.xml` configuration and update the subsystem `xmlns="urn:jboss:domain:naming:2.0"` section to be as shown here:
+>>>>>>> 91b586f36223006c0c57860d675ee0ebf40e7f7a
 
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <bindings>
@@ -57,46 +58,52 @@ Login to your OpenShift Online account and access the [Applications](https://ope
 * The NSPPassword is the password used to login to the NSP server. You will be given one for your group.
 
 ## Building the Project
-Commit the changes and then push the project to build it on the OpenShift server. The first time you do this it will take a while as all of the maven dependencies need to be pulled in.
+Commit the changes using and then push the project to build it on the OpenShift server.
+
+    git commit . -i -m"committing changes"
+    git push
+
+The first time you do this it will take a while as all of the maven dependencies need to be pulled in.
 
 The end of my build output looked like:
-remote: [INFO] Executing tasks
-remote: 
-remote: main:
-remote:      [echo] Copying iot-ear.ear to deployments...
-remote:      [copy] Copying 1 file to /var/lib/openshift/5355fbd9500446d0bb0002f6/app-root/runtime/repo/deployments
-remote: [INFO] Executed tasks
-remote: [INFO] ------------------------------------------------------------------------
-remote: [INFO] Reactor Summary:
-remote: [INFO] 
-remote: [INFO] iotbof ............................................ SUCCESS [4.207s]
-remote: [INFO] IoT BOF SDK ....................................... SUCCESS [1:52.402s]
-remote: [INFO] IoT BOF EJBs ...................................... SUCCESS [16.570s]
-remote: [INFO] IoT BOF WARs ...................................... SUCCESS [48.541s]
-remote: [INFO] IoT BOF EAR ....................................... SUCCESS [14.700s]
-remote: [INFO] IoT BOF Tests ..................................... SUCCESS [17.187s]
-remote: [INFO] DevNation IoT ..................................... SUCCESS [5.396s]
-remote: [INFO] ------------------------------------------------------------------------
-remote: [INFO] BUILD SUCCESS
-remote: [INFO] ------------------------------------------------------------------------
-remote: [INFO] Total time: 3:44.077s
-remote: [INFO] Finished at: Tue Apr 22 01:44:32 EDT 2014
-remote: [INFO] Final Memory: 72M/232M
-remote: [INFO] ------------------------------------------------------------------------
-remote: Preparing build for deployment
-remote: Deployment id is bd43f3d7
-remote: Activating deployment
-remote: Deploying WildFly
-remote: Starting wildfly cart
-remote: Found 127.6.191.1:8080 listening port
-remote: Found 127.6.191.1:9990 listening port
-remote: CLIENT_MESSAGE: Could not connect to WildFly management interface, skipping deployment verification
-remote: -------------------------
-remote: Git Post-Receive Result: success
-remote: Activation status: success
-remote: Deployment completed with status: success
-To ssh://5355fbd9500446d0bb0002f6@myiot-jbossdev.rhcloud.com/~/git/myiot.git/
-   b549cd6..cbe053c  master -> master
+
+    remote: [INFO] Executing tasks
+    remote: 
+    remote: main:
+    remote:      [echo] Copying iot-ear.ear to deployments...
+    remote:      [copy] Copying 1 file to /var/lib/openshift/5355fbd9500446d0bb0002f6/app-root/runtime/repo/deployments
+    remote: [INFO] Executed tasks
+    remote: [INFO] ------------------------------------------------------------------------
+    remote: [INFO] Reactor Summary:
+    remote: [INFO] 
+    remote: [INFO] iotbof ............................................ SUCCESS [4.207s]
+    remote: [INFO] IoT BOF SDK ....................................... SUCCESS [1:52.402s]
+    remote: [INFO] IoT BOF EJBs ...................................... SUCCESS [16.570s]
+    remote: [INFO] IoT BOF WARs ...................................... SUCCESS [48.541s]
+    remote: [INFO] IoT BOF EAR ....................................... SUCCESS [14.700s]
+    remote: [INFO] IoT BOF Tests ..................................... SUCCESS [17.187s]
+    remote: [INFO] DevNation IoT ..................................... SUCCESS [5.396s]
+    remote: [INFO] ------------------------------------------------------------------------
+    remote: [INFO] BUILD SUCCESS
+    remote: [INFO] ------------------------------------------------------------------------
+    remote: [INFO] Total time: 3:44.077s
+    remote: [INFO] Finished at: Tue Apr 22 01:44:32 EDT 2014
+    remote: [INFO] Final Memory: 72M/232M
+    remote: [INFO] ------------------------------------------------------------------------
+    remote: Preparing build for deployment
+    remote: Deployment id is bd43f3d7
+    remote: Activating deployment
+    remote: Deploying WildFly
+    remote: Starting wildfly cart
+    remote: Found 127.6.191.1:8080 listening port
+    remote: Found 127.6.191.1:9990 listening port
+    remote: CLIENT_MESSAGE: Could not connect to WildFly management interface, skipping deployment verification
+    remote: -------------------------
+    remote: Git Post-Receive Result: success
+    remote: Activation status: success
+    remote: Deployment completed with status: success
+    To ssh://5355fbd9500446d0bb0002f6@myiot-jbossdev.rhcloud.com/~/git/myiot.git/
+       b549cd6..cbe053c  master -> master
 
 
 At this point the http://myiot-jbossdev.rhcloud.com/iotbof-web/ application was deployed and accessible.
