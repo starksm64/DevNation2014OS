@@ -35,28 +35,26 @@ Login to your OpenShift Online account and access the [Applications](https://ope
 6. Run `git clone https://github.com/starksm64/DevNation2014` to pull the application source onto your computer.
 7. cd into the local git repository
 8. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014OS.git
-9. git remote add DevNation2014 ../DevNation2014
-10. git merge -s ours --no-commit DevNation2014/master
-11. git read-tree --prefix=DevNation2014 -u DevNation2014/master
+11. git remote add DevNation2014 ../DevNation2014
+12. git merge -s ours --no-commit DevNation2014/master
+13. git read-tree --prefix=DevNation2014 -u DevNation2014/master
 12. rm -rf DevNation2014/Presentation
 
 ## Wildfly Configuration
 There are a few @Resource injections from JNDI that need to be configured in the wildfly server configuration to specify the correct locations for the NSP server, it's domain, and the location of the iotbof-web project NspNotificationService. The configuration file that needs to be edited is iotbof/scripts/pom.xml.
 
-Pull the pom.xml file into an editor, and edit the properties section shown here:
+Pull the .openshift/config/standalone.xml file into an editor, and edit the subsystem xmlns="urn:jboss:domain:naming:2.0" section to be as shown here:
 
-    <properties>
-        <!-- The NSP server domain. Probably won't need to change. -->
-        <NSPDomain>domain</NSPDomain>
-        <!-- The base URL for the NSP REST interface -->
-        <NSPURL>http://red-hat-summit.cloudapp.net:8080/</NSPURL>
-        <!-- The username used to login to the NSP server -->
-        <NSPUsername>hackN</NSPUsername>
-        <!-- The password used to login to the NSP server -->
-        <NSPPassword>hackN</NSPPassword>
-        <!-- The ip address your laptops public network interface as assigned by DHCP -->
-        <wildfly.host>mydmz.shomehost.com</wildfly.host>
-    </properties>
+        <subsystem xmlns="urn:jboss:domain:naming:2.0">
+            <bindings>
+                <simple name="java:global/NSPDomain" value="domain" type="java.lang.String"/>
+                <simple name="java:global/NSPUsername" value="admin" type="java.lang.String"/>
+                <simple name="java:global/NSPPassword" value="secret" type="java.lang.String"/>
+                <simple name="java:global/NSPURL" value="http://red-hat-summit.cloudapp.net:8080/" type="java.lang.String"/>
+                <simple name="java:global/NotificationCallbackURL" value="http://${env.OPENSHIFT_GEAR_DNS}:${env.OPENSHIFT_WILDFLY_HTTP_PORT}/iotbof-web/rest/events/send" type="java.net.URL"/>
+            </bindings>
+            <remote-naming/>
+        </subsystem>
 
 * The NSPDomain binding provides the domain name on the NSP server for the sensors.
 * The NSPURL provides the base URL for the NSP REST interface
