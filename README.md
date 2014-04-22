@@ -28,18 +28,17 @@ Login to your OpenShift Online account and access the [Applications](https://ope
 
 1. Click the Wildfly 8 button to create start the deployment process![](images/WildflyBtnOS.png)
 2. Enter your Public URL to use for the application. Here I'm using myiot-jbossdev.rhcloud.com ![](images/WildflyConfigureOS.png)
-3. Set the Source Code to the https://github.com/starksm64/DevNation2014OS Git repository.
-4. Click ![](images/CreateBtnOS.png) to finish the application create process
-5. The resulting Next steps page will show you the locations of the application git repository to clone![](images/NextStepsOS.png).
+3. Click ![](images/CreateBtnOS.png) to finish the application create process
+4. The resulting Next steps page will show you the locations of the application git repository to clone![](images/NextStepsOS.png).
     * Copy the git clone command line shown and run that on your local computer to pull the application repository down from OpenShift.
-6. cd into the local git repository
-7. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014OS.git
-8. git remote add DevNation2014 https://github.com/starksm64/DevNation2014.git
-9. git fetch DevNation2014
-10. git merge -s ours --no-commit DevNation2014/master
-11. git read-tree --prefix=DevNation2014 -u DevNation2014/master
-12. rm -rf DevNation2014/Presentation
-13. Edit the .openshift/config/standalone.xml configuration and update the subsystem xmlns="urn:jboss:domain:naming:2.0" section to be as shown here:
+5. cd into the local git repository
+6. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014OS.git
+7. git remote add DevNation2014 https://github.com/starksm64/DevNation2014.git
+8. git fetch DevNation2014
+9. git merge -s ours --no-commit DevNation2014/master
+10. git read-tree --prefix=DevNation2014 -u DevNation2014/master
+11. rm -rf DevNation2014/Presentation
+12. Edit the .openshift/config/standalone.xml configuration and update the subsystem xmlns="urn:jboss:domain:naming:2.0" section to be as shown here:
 
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <bindings>
@@ -56,7 +55,6 @@ Login to your OpenShift Online account and access the [Applications](https://ope
 * The NSPURL provides the base URL for the NSP REST interface
 * The NSPUsername is the username used to login to the NSP server. You will be given one for your group.
 * The NSPPassword is the password used to login to the NSP server. You will be given one for your group.
-* The wildfly.host is the public NIC IP address your Wildfly server is bound to.
 
 ## Building the Project
 Commit the changes and then push the project to build it on the OpenShift server. The first time you do this it will take a while as all of the maven dependencies need to be pulled in.
