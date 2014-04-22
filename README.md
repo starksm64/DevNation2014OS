@@ -34,17 +34,12 @@ Login to your OpenShift Online account and access the [Applications](https://ope
     * Copy the git clone command line shown and run that on your local computer to pull the application repository down from OpenShift.
 6. cd into the local git repository
 7. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014OS.git
-8. cd DevNation2014
-9. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014
-10. rm -rf 
-12. git merge -s ours --no-commit DevNation2014/master
-13. git read-tree --prefix=DevNation2014 -u DevNation2014/master
+8. git remote add DevNation2014 https://github.com/starksm64/DevNation2014.git
+9. git fetch DevNation2014
+10. git merge -s ours --no-commit DevNation2014/master
+11. git read-tree --prefix=DevNation2014 -u DevNation2014/master
 12. rm -rf DevNation2014/Presentation
-
-## Wildfly Configuration
-There are a few @Resource injections from JNDI that need to be configured in the wildfly server configuration to specify the correct locations for the NSP server, it's domain, and the location of the iotbof-web project NspNotificationService. The configuration file that needs to be edited is iotbof/scripts/pom.xml.
-
-Pull the .openshift/config/standalone.xml file into an editor, and edit the subsystem xmlns="urn:jboss:domain:naming:2.0" section to be as shown here:
+13. Edit the .openshift/config/standalone.xml configuration and update the subsystem xmlns="urn:jboss:domain:naming:2.0" section to be as shown here:
 
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <bindings>
@@ -52,7 +47,7 @@ Pull the .openshift/config/standalone.xml file into an editor, and edit the subs
                 <simple name="java:global/NSPUsername" value="admin" type="java.lang.String"/>
                 <simple name="java:global/NSPPassword" value="secret" type="java.lang.String"/>
                 <simple name="java:global/NSPURL" value="http://red-hat-summit.cloudapp.net:8080/" type="java.lang.String"/>
-                <simple name="java:global/NotificationCallbackURL" value="http://${env.OPENSHIFT_GEAR_DNS}:${env.OPENSHIFT_WILDFLY_HTTP_PORT}/iotbof-web/rest/events/send" type="java.net.URL"/>
+                <simple name="java:global/NotificationCallbackURL" value="http://${env.OPENSHIFT_GEAR_DNS}/iotbof-web/rest/events/send" type="java.net.URL"/>
             </bindings>
             <remote-naming/>
         </subsystem>
@@ -64,84 +59,50 @@ Pull the .openshift/config/standalone.xml file into an editor, and edit the subs
 * The wildfly.host is the public NIC IP address your Wildfly server is bound to.
 
 ## Building the Project
-To build the project and bring up the NSPViewer application running under Wildfly, perform the following steps:
+Commit the changes and then push the project to build it on the OpenShift server. The first time you do this it will take a while as all of the maven dependencies need to be pulled in.
 
-1. wget http://download.jboss.org/wildfly/8.0.0.Final/wildfly-8.0.0.Final.zip
-    1. `unzip wildfly-8.0.0.Final.zip`
-    2. Note the path to the wildfly-8.0.0.Final directory as it will be used a wildfly.home in configurations
-2. `git clone https://github.com/starksm64/DevNation2014.git` to create the DevNation2014 repository
-3. `cd DevNation2014`
-4. Set JAVA_HOME if needed
-5. edit the project root pom.xml and
-	1. set the wildfly.home property to the directory path noted above
-	2. cd into the scripts directory and run `mvn wildfly:start wildfly:execute-commands`
-6. cd back to DevNation2014 and build the project by running `mvn install`
-7. `cd iotbof-ear`
-8. Run the application by running `mvn wildfly:run`
-9. Now you should be able to open http://${wildfly.host}/iotbof-web/index.xhtml in your brower to view the NSPViewer application.
+The end of my build output looked like:
+remote: [INFO] Executing tasks
+remote: 
+remote: main:
+remote:      [echo] Copying iot-ear.ear to deployments...
+remote:      [copy] Copying 1 file to /var/lib/openshift/5355fbd9500446d0bb0002f6/app-root/runtime/repo/deployments
+remote: [INFO] Executed tasks
+remote: [INFO] ------------------------------------------------------------------------
+remote: [INFO] Reactor Summary:
+remote: [INFO] 
+remote: [INFO] iotbof ............................................ SUCCESS [4.207s]
+remote: [INFO] IoT BOF SDK ....................................... SUCCESS [1:52.402s]
+remote: [INFO] IoT BOF EJBs ...................................... SUCCESS [16.570s]
+remote: [INFO] IoT BOF WARs ...................................... SUCCESS [48.541s]
+remote: [INFO] IoT BOF EAR ....................................... SUCCESS [14.700s]
+remote: [INFO] IoT BOF Tests ..................................... SUCCESS [17.187s]
+remote: [INFO] DevNation IoT ..................................... SUCCESS [5.396s]
+remote: [INFO] ------------------------------------------------------------------------
+remote: [INFO] BUILD SUCCESS
+remote: [INFO] ------------------------------------------------------------------------
+remote: [INFO] Total time: 3:44.077s
+remote: [INFO] Finished at: Tue Apr 22 01:44:32 EDT 2014
+remote: [INFO] Final Memory: 72M/232M
+remote: [INFO] ------------------------------------------------------------------------
+remote: Preparing build for deployment
+remote: Deployment id is bd43f3d7
+remote: Activating deployment
+remote: Deploying WildFly
+remote: Starting wildfly cart
+remote: Found 127.6.191.1:8080 listening port
+remote: Found 127.6.191.1:9990 listening port
+remote: CLIENT_MESSAGE: Could not connect to WildFly management interface, skipping deployment verification
+remote: -------------------------
+remote: Git Post-Receive Result: success
+remote: Activation status: success
+remote: Deployment completed with status: success
+To ssh://5355fbd9500446d0bb0002f6@myiot-jbossdev.rhcloud.com/~/git/myiot.git/
+   b549cd6..cbe053c  master -> master
 
 
+At this point the http://myiot-jbossdev.rhcloud.com/iotbof-web/ application was deployed and accessible.
 
-# Trouble Shooting
 
-## Compilation errors
-If you see a compilation error like the following while building the project using step 6 above:
-
-	[INFO] -------------------------------------------------------------
-	[ERROR] COMPILATION ERROR : 
-	[INFO] -------------------------------------------------------------
-	[ERROR] Failure executing javac, but could not parse the error:
-	javac: invalid target release: 1.7
-	Usage: javac <options> <source files>
-
-then the java being picked up by default is Java 6 or lower. Explicitly export a JAVA_HOME that points to a JDK install of Java 7.
-
-## Duplicate resource error
-
-If the server fails to startup in step 8, and you see an error like the following:
-
-[ERROR] Failed to execute goal org.wildfly.plugins:wildfly-maven-plugin:1.0.1.Final:run (default-cli) on project iot-ear: The server failed to start: Deployment failed and was rolled back. "JBAS014803: Duplicate resource [(\"deployment\" => \"iot-ear.ear\")]" -> [Help 1]
-
-Edit your ${wildfly.home}/standalone/configuration/standalone.xml file and remove the deployments section at the end of the file:
-
-	    </socket-binding-group>
-	
-	    <deployments>
-	        <deployment name="iot-ear.ear" runtime-name="iot-ear.ear">
-	            <content sha1="c27977d4ddd3dcd08ac3849ad34f27198380a4d6"/>
-	        </deployment>
-	    </deployments>
-	</server>
-
-The server is getting confused about the iot-ear.ear deployment for some reason that I have not figured out as yet.
-
-## Missing JNDI bindings
-Check the JNDI namespace of the server by running
-`${WILDFLY_HOME}/bin/jboss-cli.sh -c --command=/subsystem=naming:jndi-view`
-
-Sometimes you need to control the interface or http port your local wildfly instance uses. These can be set by adding a system-properties section to your wildfly-8.0.0.Final/standalone/configuration/standalone.xml file like the following:
-
-    <system-properties>
-        <property name="jboss.bind.address" value="127.0.0.1"/>
-        <property name="jboss.http.port" value="8088"/>
-    </system-properties>
-
-## Notifications could not be enabled
-If you see a warning about Notifications could not be enabled, then the NotificationCallbackURL is not accessible by the NSP server. Either the URL has a typo, or the port is not getting through the firewall/router you are behind are the typical problems I have run into.
-
-## USB Terminal
-
-Mac: [CoolTerm](http://freeware.the-meiers.org/CoolTermMac.zip) is a simple serial port terminal application (no terminal emulation) that is geared towards hobbyists and professionals with a need to exchange data with hardware connected to serial ports such as servo controllers, robotic kits, GPS receivers, microcontrollers, etc.
-
-minicom is what to use for linux.
-yum install minicom
-
-## SSH tunnel
-
-on laptop
-ssh -N -R 8083:localhost:8083 dmz.starkinternational.com
-on dmz.starkinternational.com
-ssh -N -L 192.168.1.107:8083:localhost:8083 locahost
-
-Not sure why this won't work on laptop:
-ssh -R 192.168.1.107:8083:127.0.0.1:8083 -N dmz.starkinternational.com
+# MBed.org
+There are two mock sensors that are available for testing by default on the NSP server. If you have an mbed device from the DevNation lab, or have bought one from [mbed.org](http://mbed.org/), you can use the RedHatSummit_NanoService_Ethernet firmware projects as described on the [RedHat-Summit-2014-Wiki](https://mbed.org/teams/MBED_DEMOS/wiki/RedHat-Summit-2014-Wiki) to connect your device to the NSP server running in the cloud. You will then be able to view and control your device using the OpenShift application.
