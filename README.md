@@ -32,10 +32,11 @@ Login to your OpenShift Online account and access the [Applications](https://ope
 4. Click ![](images/CreateBtnOS.png) to finish the application create process
 5. The resulting Next steps page will show you the locations of the application git repository to clone![](images/NextStepsOS.png).
     * Copy the git clone command line shown and run that on your local computer to pull the application repository down from OpenShift.
-6. Run `git clone https://github.com/starksm64/DevNation2014` to pull the application source onto your computer.
-7. cd into the local git repository
-8. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014OS.git
-11. git remote add DevNation2014 ../DevNation2014
+6. cd into the local git repository
+7. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014OS.git
+8. cd DevNation2014
+9. git pull -s recursive -X theirs https://github.com/starksm64/DevNation2014
+10. rm -rf 
 12. git merge -s ours --no-commit DevNation2014/master
 13. git read-tree --prefix=DevNation2014 -u DevNation2014/master
 12. rm -rf DevNation2014/Presentation
