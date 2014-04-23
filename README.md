@@ -39,7 +39,6 @@ Login to your OpenShift Online account and access the [Applications](https://ope
 10. `git read-tree --prefix=DevNation2014 -u DevNation2014/master`
 11. `rm -rf DevNation2014/Presentation`
 12. Edit the `.openshift/config/standalone.xml` configuration and update the subsystem `xmlns="urn:jboss:domain:naming:2.0"` section to be as shown here:
->>>>>>> 91b586f36223006c0c57860d675ee0ebf40e7f7a
 
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <bindings>
